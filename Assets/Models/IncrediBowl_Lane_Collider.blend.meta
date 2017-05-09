@@ -1,24 +1,19 @@
 fileFormatVersion: 2
 guid: aead8d042e3fa614c808d0affa5fde2a
-timeCreated: 1494296524
+timeCreated: 1494305391
 licenseType: Pro
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
-    100002: PinAndMachineArea
     400000: //RootNode
-    400002: PinAndMachineArea
-    2300000: PinAndMachineArea
-    2300002: //RootNode
-    3300000: PinAndMachineArea
-    3300002: //RootNode
-    4300000: PinAndMachineArea
-    4300002: LaneCollider
+    2300000: //RootNode
+    3300000: //RootNode
+    4300000: Pit
     7400000: Default Take
     9500000: //RootNode
   materials:
-    importMaterials: 0
+    importMaterials: 1
     materialName: 0
     materialSearch: 1
   animations:
@@ -60,7 +55,7 @@ ModelImporter:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
-  importAnimation: 0
+  importAnimation: 1
   copyAvatar: 0
   humanDescription:
     serializedVersion: 2
@@ -79,7 +74,7 @@ ModelImporter:
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 0
+  animationType: 2
   humanoidOversampling: 1
   additionalBone: 0
   userData: 

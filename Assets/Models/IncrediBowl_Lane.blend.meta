@@ -12,6 +12,8 @@ ModelImporter:
     100008: //RootNode
     100010: Lane
     100012: PinAndMachineArea
+    100014: PinArea
+    100016: Pit
     400000: CappingLarge
     400002: CappingSmall
     400004: Gutter1
@@ -19,24 +21,32 @@ ModelImporter:
     400008: //RootNode
     400010: Lane
     400012: PinAndMachineArea
+    400014: PinArea
+    400016: Pit
     2300000: CappingLarge
     2300002: CappingSmall
     2300004: Gutter1
     2300006: Gutter2
     2300008: Lane
     2300010: PinAndMachineArea
+    2300012: PinArea
+    2300014: Pit
     3300000: CappingLarge
     3300002: CappingSmall
     3300004: Gutter1
     3300006: Gutter2
     3300008: Lane
     3300010: PinAndMachineArea
+    3300012: PinArea
+    3300014: Pit
     4300000: Gutter2
     4300002: CappingSmall
     4300004: CappingLarge
     4300006: Gutter1
     4300008: Lane
     4300010: PinAndMachineArea
+    4300012: PinArea
+    4300014: Pit
     7400000: Default Take
     9500000: //RootNode
   materials:
