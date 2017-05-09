@@ -70,6 +70,8 @@ ModelImporter:
     100124: Screens_001
     100126: SofaLarge
     100128: SofaSmall
+    100130: PinSetter
+    100132: PinSweeper
     400000: BowlingBall
     400002: BowlingLane1
     400004: BowlingLane2
@@ -135,6 +137,8 @@ ModelImporter:
     400124: Screens_001
     400126: SofaLarge
     400128: SofaSmall
+    400130: PinSetter
+    400132: PinSweeper
     2300000: BowlingBall
     2300002: Box01
     2300004: Box02
@@ -193,6 +197,8 @@ ModelImporter:
     2300110: Pins_019
     2300112: ScreenMount
     2300114: Screens_001
+    2300116: PinSetter
+    2300118: PinSweeper
     3300000: BowlingBall
     3300002: Box01
     3300004: Box02
@@ -251,6 +257,8 @@ ModelImporter:
     3300110: Pins_019
     3300112: ScreenMount
     3300114: Screens_001
+    3300116: PinSetter
+    3300118: PinSweeper
     4300000: Cube
     4300002: Screens_001
     4300004: LargeScreen
@@ -309,6 +317,8 @@ ModelImporter:
     4300110: Box17
     4300112: Box18
     4300114: Object02
+    4300116: PinSetter
+    4300118: PinSweeper
     7400000: Default Take
     9500000: //RootNode
   materials:
@@ -321,6 +331,8 @@ ModelImporter:
     resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 

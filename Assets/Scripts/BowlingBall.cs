@@ -23,7 +23,7 @@ public class BowlingBall : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         if (!start) {
-            Debug.Log("Ball start velocity: " + m_rb.velocity);
+            // Debug.Log("Ball start velocity: " + m_rb.velocity);
             start = true;
         }
         travelTime += Time.deltaTime;
@@ -32,8 +32,8 @@ public class BowlingBall : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Ball approach velocity: " + m_rb.velocity);
-        Debug.Log("Travel time: " + travelTime);
+        // Debug.Log("Ball approach velocity: " + m_rb.velocity);
+        // Debug.Log("Travel time: " + travelTime);
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -41,8 +41,8 @@ public class BowlingBall : MonoBehaviour {
         if (collision.gameObject.CompareTag("Pin")) {
             if (!hitPin)
             {
-                Debug.Log("Ball hit velocity: " + m_rb.velocity);
-                Debug.Log("Travel time: " + travelTime);
+                // Debug.Log("Ball hit velocity: " + m_rb.velocity);
+                // Debug.Log("Travel time: " + travelTime);
                 hitPin = true;
             }
         }
