@@ -11,16 +11,4 @@ public class Pin : MonoBehaviour {
 
 	}
 
-    private void Start()
-    {
-        m_rb = GetComponent<Rigidbody>();
-        m_rb.isKinematic = false;
-
-    }
-
-    // Update is called once per frame
-    void Update () {
-        m_rb.velocity = Vector3.zero;
-        m_rb.angularVelocity = Vector3.zero;
-    }
 }
