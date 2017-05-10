@@ -9,6 +9,8 @@ public class PinSetter : MonoBehaviour {
     private bool isHoldingPins = false;
 
     public Transform pinsParentTransform;
+    public Transform pinUpInitialPosition;
+    public GameObject pinsPrefab;
 
     private void OnEnable()
     {
@@ -59,8 +61,22 @@ public class PinSetter : MonoBehaviour {
         }
     }
 
+    public void InitNewPins() {
+        isHoldingPins = true;
+        isFullyDown = false;
+        GameObject newPins = Instantiate(pinsPrefab, pinUpInitialPosition.transform.position, Quaternion.identity);
+
+        while(newPins.transform.childCount > 0) {
+            GameObject go = newPins.transform.GetChild(0).gameObject;
+            go.GetComponent<Rigidbody>().isKinematic = true;
+            go.transform.parent = transform;
+        }
+        
+        ActivateSetter();
+    }
+
     // Use this for initialization
-    void Start () {
+    void Awake () {
         animator = GetComponent<Animator>();
 	}
 }
