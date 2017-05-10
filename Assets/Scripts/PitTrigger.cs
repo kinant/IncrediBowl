@@ -8,8 +8,12 @@ public class PitTrigger : MonoBehaviour {
     {
         if (other.gameObject.CompareTag("Ball"))
         {
-            //BaseEventManager.BallReachPit();
             Invoke("Trigger", 1.0f);
+        }
+        else if (other.gameObject.CompareTag("Pin"))
+        {
+            GameManager.Instance.PinDown();
+            other.gameObject.SetActive(false);
         }
     }
 
