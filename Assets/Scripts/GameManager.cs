@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour {
 
     public PinSetter pinSetterScript;
     public LinkedList<Frame> frames;
+    public Pin[] pins;
 
     private ShotState _shotState = ShotState.First;
     private int currShotScore = 0;
@@ -83,6 +84,7 @@ public class GameManager : MonoBehaviour {
                     EndFrame();
                 }
                 else {
+                    Debug.Log("Going to second shot!");
                     _shotState = ShotState.Second;
                 }
 
@@ -115,6 +117,19 @@ public class GameManager : MonoBehaviour {
         _shotState = ShotState.First;
         currFrame++;
         StartNewFrame();
+
+        // set new pins
+        ResetPins();
+
+    }
+
+    private void ResetPins() {
+        foreach (Pin pin in pins) {
+            pin.gameObject.SetActive(true);
+            pin.ResetPin();
+        }
+
+        pinSetterScript.InitNewFrame();
     }
 
     public ShotState currShotState {

@@ -75,6 +75,13 @@ public class PinSetter : MonoBehaviour {
         ActivateSetter();
     }
 
+    public void InitNewFrame() {
+        isHoldingPins = true;
+        isFullyDown = false;
+        ActivateSetter();
+    }
+
+
     // Use this for initialization
     void Awake () {
         animator = GetComponent<Animator>();
