@@ -6,42 +6,28 @@ public class PinSweeper : MonoBehaviour {
 
     private Animator animator;
 
-    private void OnEnable()
-    {
-       BaseEventManager.OnPinsPickedUp += new EventHandler(ActivateSweeper);
-    }
-
-    private void OnDisable()
-    {
-        BaseEventManager.OnPinsPickedUp -= new EventHandler(ActivateSweeper);
-    }
-
     private void Start()
     {
         animator = GetComponent<Animator>();
     }
 
-    private void ActivateSweeper()
-    {
-        StartCoroutine(AnimateSweeper());
+    public void SweeperUp() {
+        SetAnimatorTrigger("up");
     }
 
-    IEnumerator AnimateSweeper() {
-        // sweep
-        animator.SetTrigger("sweep");
-        yield return new WaitForSeconds(3.0f);
-        // wait a little
-        yield return new WaitForSeconds(0.25f);
-        // unsweep
-        animator.SetTrigger("unsweep");
-        yield return new WaitForSeconds(3.0f);
-        OnSweepComplete();
+    public void SweeperSweep() {
+        SetAnimatorTrigger("sweep");
     }
 
-    public void OnSweepComplete() {
-        BaseEventManager.SweepComplete();
+    public void SweeperUnsweep() {
+        SetAnimatorTrigger("unsweep");
     }
 
+    public void SweeperDown() {
+        SetAnimatorTrigger("down");
+    }
 
-
+    private void SetAnimatorTrigger(string triggerName) {
+        animator.SetTrigger(triggerName);
+    }
 }

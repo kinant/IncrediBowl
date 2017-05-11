@@ -12,19 +12,7 @@ public class PinSetter : MonoBehaviour {
     public Transform pinUpInitialPosition;
     public GameObject pinsPrefab;
 
-    private void OnEnable()
-    {
-        BaseEventManager.OnBallReachedPit += new EventHandler(ActivateSetter);
-        BaseEventManager.OnSweeperCompleteSweep += new EventHandler(ActivateSetter);
-    }
-
-    private void OnDisable()
-    {
-        BaseEventManager.OnBallReachedPit -= new EventHandler(ActivateSetter);
-        BaseEventManager.OnSweeperCompleteSweep -= new EventHandler(ActivateSetter);
-    }
-
-    private void ActivateSetter() {
+    public void ActivateSetter() {
         animator.SetTrigger("activate");
     }
 
@@ -61,26 +49,11 @@ public class PinSetter : MonoBehaviour {
         }
     }
 
-    public void InitNewPins() {
-        isHoldingPins = true;
-        isFullyDown = false;
-        GameObject newPins = Instantiate(pinsPrefab, pinUpInitialPosition.transform.position, Quaternion.identity);
-
-        while(newPins.transform.childCount > 0) {
-            GameObject go = newPins.transform.GetChild(0).gameObject;
-            go.GetComponent<Rigidbody>().isKinematic = true;
-            go.transform.parent = transform;
-        }
-        
-        ActivateSetter();
-    }
-
     public void InitNewFrame() {
         isHoldingPins = true;
         isFullyDown = false;
         ActivateSetter();
     }
-
 
     // Use this for initialization
     void Awake () {
