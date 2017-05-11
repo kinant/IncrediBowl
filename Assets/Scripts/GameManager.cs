@@ -12,6 +12,7 @@ public class Frame
     public bool isSpare;
     public bool isStrike;
     public int frameScore = -1;
+    public bool isPendingScore = true;
 }
 
 public class GameManager : MonoBehaviour {
@@ -65,16 +66,6 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    public void ChangeShot() {
-        if (_shotState == ShotState.First)
-        {
-            _shotState = ShotState.Second;
-        }
-        else {
-            _shotState = ShotState.First;
-        }
-    }
-
     private void Start()
     {
         frames = new LinkedList<Frame>();
@@ -95,14 +86,14 @@ public class GameManager : MonoBehaviour {
     private void SetShotScore() {
         if (_shotState == ShotState.First)
         {
-           // Debug.Log("First shot score: " + currShotScore);
             frames.Last.Value.firstThrow = currShotScore;
             pinsRemaining = scoreTrigger.numPinsStanding;
 
             // check if we have a strike
             if (frames.Last.Value.firstThrow == 10)
             {
-                Debug.Log("SRTIKE!");
+                frames.Last.Value.isStrike = true;
+                frames.Last.Value.isPendingScore = true;
                 EndFrame();
                 StartNewFrame();
             }
@@ -113,9 +104,11 @@ public class GameManager : MonoBehaviour {
             currShotScore = 0;
         }
         else {
-            // Debug.Log("Second shot score: " + currShotScore);
             frames.Last.Value.secondThrow = currShotScore;
-           
+
+            if (frames.Last.Value.firstThrow + frames.Last.Value.secondThrow == 10) {
+                frames.Last.Value.isSpare = true;
+            }
         }
 
         UpdateScores();
@@ -185,6 +178,11 @@ public class GameManager : MonoBehaviour {
     }
 
     private void EndFrame() {
+
+        if (currFrame == 10) {
+            Debug.Log("GAME OVER!");
+        }
+
         _shotState = ShotState.First;
         currFrame++;
         // set new pins
@@ -199,11 +197,6 @@ public class GameManager : MonoBehaviour {
         }
 
         pinSetterScript.PickUpPins();
-        pinSetterScript.InitNewFrame();
-    }
-
-    public ShotState currShotState {
-        get { return _shotState;}
     }
 
     private void UpdateScores()
@@ -216,105 +209,82 @@ public class GameManager : MonoBehaviour {
 
     private void CalcScore(Frame frame)
     {
+        LinkedListNode<Frame> frameNode = frames.Find(frame);
 
-        if (frame.frameScore > -1)
+        if (!frame.isPendingScore)
         {
             return;
         }
 
-        LinkedListNode<Frame> node = frames.Find(frame);
-
-        // it was a strike...
         if (frame.isStrike)
         {
-            int bonus = GetStrikeBonus(node);
-            frame.frameScore = (bonus < 0) ? -1 : frame.firstThrow + bonus + GetPreviousFrameScore(node);
+            // get the strike bonus
+            int bonus = GetStrikeBonus(frameNode);
+
+            if (bonus > 0)
+            {
+                frame.frameScore = frame.firstThrow + bonus + GetPreviousFrameScore(frameNode);
+                frame.isPendingScore = false;
+            }
         }
-        // it was a spare...
         else if (frame.isSpare)
         {
-            int bonus = GetSpareBonus(node);
-            frame.frameScore = (bonus < 0) ? -1 : frame.firstThrow + frame.secondThrow + bonus + GetPreviousFrameScore(node);
-        }
-        // it was a normal shot...
-        else
-        {
+            // get the spare bonus...
+            int bonus = GetSpareBonus(frameNode);
 
-            // we do not have a second shot yet...so no update to score
-            if (frame.secondThrow < 0)
-            {
-                return;
+            if (bonus > 0) {
+                frame.frameScore = frame.firstThrow + frame.secondThrow + bonus + GetPreviousFrameScore(frameNode);
+                frame.isPendingScore = false;
             }
 
-            frame.frameScore = frame.firstThrow + frame.secondThrow + GetPreviousFrameScore(node);
+        }
+        else {
+            if (frame.secondThrow != -1) {
+                frame.frameScore = frame.firstThrow + frame.secondThrow + GetPreviousFrameScore(frameNode);
+                frame.isPendingScore = false;
+            }
         }
     }
 
     private int GetSpareBonus(LinkedListNode<Frame> node)
     {
-        // check that we have enough "future" shots
-        if (node.Next == null)
-        {
+        // check that we have the next shot available
+        if (node.Next == null) {
             return -1;
         }
 
-        if (node.Next.Value.isStrike)
-        {
-            return 10;
-        }
-        else
-        {
-
-            return node.Next.Value.firstThrow;
-        }
+        // we have a next shot
+        return node.Next.Value.firstThrow;
     }
 
     private int GetStrikeBonus(LinkedListNode<Frame> node)
     {
-
-        // check that we have enough "future" shots
-        if (node.Next == null)
+        // check that we have at least one future frame
+        if(node.Next == null)
         {
             return -1;
         }
 
-        if (node.Next.Value.isStrike && node.Next.Next == null && node.Value.frameIndex != 10)
-        {
-            return -1;
-        }
+        // CASE 1: DOUBLE STRIKES
+        if (node.Next.Value.isStrike) {
 
-        // if we got a strike on the 10th frame...
-        if (node.Value.frameIndex == 10)
-        {
-            if (node.Next.Value.firstThrow != -1 && node.Next.Value.secondThrow != -1)
-            {
-                // get the values for the "11th" frame
-                return node.Next.Value.firstThrow + node.Next.Value.secondThrow;
-            }
-            else
-            {
+            // check that we have another future frame
+            if (node.Next.Next == null) {
                 return -1;
             }
+
+            // if we are here, we have two valid future frames for double strike
+            return node.Next.Value.firstThrow + node.Next.Next.Value.firstThrow;
         }
 
-        // condition 1: next shot was a strike
-        if (node.Next.Value.isStrike && node.Next.Value.frameIndex != 11)
-        {
-            // if so, the next shot is for the frame after
-            // check if it was a strike or not
-            if (node.Next.Next.Value.isStrike)
-            {
-                return 20;
-            }
-            else
-            {
-                return 10 + node.Next.Next.Value.firstThrow;
-            }
+        // CASE 2: NOT DOUBLE STRIKES
+        // we need the two values for this frame
+        if (node.Next.Value.firstThrow < 0 || node.Next.Value.secondThrow < 0) {
+            return -1;
         }
-        else
-        {
-            return node.Next.Value.firstThrow + node.Next.Value.secondThrow;
-        }
+
+        // we have the next two values for the frame
+        return node.Next.Value.firstThrow + node.Next.Value.secondThrow;
     }
 
     private int GetPreviousFrameScore(LinkedListNode<Frame> node)
@@ -327,89 +297,19 @@ public class GameManager : MonoBehaviour {
         return node.Previous.Value.frameScore;
     }
 
-    private void PrintFrames()
-    {
-        foreach (Frame frame in frames)
-        {
-
-            if (frame.frameIndex == 11)
-            {
-                break;
-            }
-
-            Debug.Log("======== FRAME " + frame.frameIndex + " ========");
-
-            if (frame.isStrike)
-            {
-                Debug.Log("Throw 1: X");
-
-                if (frame.frameIndex == 10)
-                {
-                    LinkedListNode<Frame> n = frames.Find(frame);
-
-                    if (n.Next == null)
-                    {
-                        continue;
-                    }
-
-                    int val1 = n.Next.Value.firstThrow;
-                    int val2 = n.Next.Value.secondThrow;
-
-                    if (val1 > -1)
-                    {
-                        if (val1 == 10)
-                        {
-                            Debug.Log("Throw 2: X");
-                        }
-                        else
-                        {
-                            Debug.Log("Throw 2: " + n.Next.Value.firstThrow);
-                        }
-                    }
-                    if (val2 > -1)
-                    {
-
-                        if (val2 == 10)
-                        {
-                            Debug.Log("Throw 3: X");
-                        }
-                        else
-                        {
-                            Debug.Log("Throw 3:" + n.Next.Value.secondThrow);
-                        }
-                    }
-                }
-            }
-            else if (frame.isSpare)
-            {
-                Debug.Log("Throw 1: " + frame.firstThrow);
-                Debug.Log("Throw 2: /");
-            }
-            else
-            {
-                Debug.Log("Throw 1: " + frame.firstThrow);
-                if (frame.secondThrow < 0)
-                {
-                    Debug.Log("Throw 2: ");
-                }
-                else
-                {
-                    Debug.Log("Throw 2: " + frame.secondThrow);
-                }
-            }
-
-            if (frame.frameScore < 0)
-            {
-                Debug.Log("Frame Score:  ");
-            }
-            else
-            {
-                Debug.Log("Frame Score: " + frame.frameScore);
-            }
-
-            Debug.Log("====================");
-            Debug.Log(" ");
+    private void PrintFrames() {
+        foreach (Frame frame in frames) {
+            Debug.Log("==================================================" + "\n" +
+                "Frame: " + frame.frameIndex +"\n" +
+                "#1: " + frame.firstThrow + "\n" +
+                "#2: " + frame.secondThrow + "\n" +
+                "score: " + frame.frameScore + "\n" +
+                "Pending Score: " + frame.isPendingScore + "\n" +
+                "is strike?" + frame.isStrike + "\n" +
+                "is spare?" + frame.isSpare + "\n" +
+                "==================================================");
         }
     }
+
 }
 

@@ -8,7 +8,6 @@ public class ScoreTrigger : MonoBehaviour {
 
     public int numPinsStanding {
         get {
-            Debug.Log("Pins still standing: " + pinsInTrigger);
             return pinsInTrigger;
         }
     }
@@ -16,7 +15,6 @@ public class ScoreTrigger : MonoBehaviour {
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Pin")) {
-            // Debug.Log("PIN ENTERED");
             pinsInTrigger++;
         }
     }
@@ -25,7 +23,6 @@ public class ScoreTrigger : MonoBehaviour {
     {
         if (other.gameObject.CompareTag("Pin"))
         {
-            // Debug.Log("PIN EXIT!");
             pinsInTrigger--;
         }
     }

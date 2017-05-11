@@ -62,11 +62,6 @@ public class PinSetter : MonoBehaviour {
         isHoldingPins = false;
         pickUpPins.Clear();
     }
-
-    public void InitNewFrame() {
-        // ActivateSetter();
-    }
-
     void Start () {
         animator = GetComponent<Animator>();
         pickUpPins = new List<GameObject>();
