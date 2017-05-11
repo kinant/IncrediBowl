@@ -32,10 +32,10 @@ public class GameManager : MonoBehaviour {
 
     private ShotState _shotState = ShotState.First;
     private const int MAX_PINS = 10;
-    private int pinsPickedUp = 0;
+    private int pinsRemaining = MAX_PINS;
 
     private int currShotScore {
-        get { return MAX_PINS - scoreTrigger.numPinsStanding; }
+        get { return pinsRemaining - scoreTrigger.numPinsStanding; }
         set { ; }
     }
 
@@ -63,10 +63,6 @@ public class GameManager : MonoBehaviour {
         {
             _instance = this;
         }
-    }
-
-    public void PinPickedUp() {
-        pinsPickedUp++;
     }
 
     public void ChangeShot() {
@@ -101,6 +97,7 @@ public class GameManager : MonoBehaviour {
         {
            // Debug.Log("First shot score: " + currShotScore);
             frames.Last.Value.firstThrow = currShotScore;
+            pinsRemaining = scoreTrigger.numPinsStanding;
 
             // check if we have a strike
             if (frames.Last.Value.firstThrow == 10)
@@ -117,11 +114,8 @@ public class GameManager : MonoBehaviour {
         }
         else {
             // Debug.Log("Second shot score: " + currShotScore);
-            frames.Last.Value.secondThrow = currShotScore - frames.Last.Value.firstThrow;
-            currShotScore = 0;
-            _shotState = ShotState.First;
-            EndFrame();
-            StartNewFrame();
+            frames.Last.Value.secondThrow = currShotScore;
+           
         }
 
         UpdateScores();
@@ -159,6 +153,8 @@ public class GameManager : MonoBehaviour {
         pinSweeperScript.SweeperDown();
         yield return new WaitForSeconds(1.25f);
 
+        SetShotScore();
+
         // the pin sweeper sweeps and unsweeps
         pinSweeperScript.SweeperSweep();
         yield return new WaitForSeconds(0.55f);
@@ -166,19 +162,25 @@ public class GameManager : MonoBehaviour {
         pinSweeperScript.SweeperUnsweep();
         yield return new WaitForSeconds(0.55f);
 
-        SetShotScore();
-
+        // SetShotScore();
+        EndFrame();
         // last, the pin setter goes down and drops the pins
         pinSetterScript.ActivateSetter();
         yield return new WaitForSeconds(2.10f);
 
         // the sweeper goes up
         pinSweeperScript.SweeperUp();
+
+        // Reset
+        currShotScore = 0;
+        _shotState = ShotState.First;
+        StartNewFrame();
     }
 
     private void StartNewFrame() {
         Frame frame = new Frame();
         frame.frameIndex = currFrame;
+        pinsRemaining = MAX_PINS;
         frames.AddLast(frame);
     }
 

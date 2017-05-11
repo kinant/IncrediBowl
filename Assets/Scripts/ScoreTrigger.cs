@@ -7,7 +7,10 @@ public class ScoreTrigger : MonoBehaviour {
     private int pinsInTrigger = 0;
 
     public int numPinsStanding {
-        get { return pinsInTrigger; }
+        get {
+            Debug.Log("Pins still standing: " + pinsInTrigger);
+            return pinsInTrigger;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
