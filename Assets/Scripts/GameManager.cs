@@ -25,6 +25,8 @@ public class GameManager : MonoBehaviour {
 
     public LinkedList<Frame> frames;
     public Pin[] pins;
+    public Transform pinParentTransform;
+    public Transform pinsNewFrameStart;
 
     private ShotState _shotState = ShotState.First;
     private const int MAX_PINS = 10;
@@ -83,7 +85,13 @@ public class GameManager : MonoBehaviour {
 
     private void HandleBallThrow() {
         // ball thrown, start pin sweeper and pin setter mechanism
-        StartCoroutine(SweepAndSetMechanism());
+        if (_shotState == ShotState.First)
+        {
+            StartCoroutine(SweepAndSetMechanism());
+        }
+        else {
+            StartCoroutine(SweepAndResetMechanism());
+        }
     }
 
     private void SetShotScore() {
@@ -91,15 +99,31 @@ public class GameManager : MonoBehaviour {
         {
             Debug.Log("First shot score: " + currShotScore);
             frames.Last.Value.firstThrow = currShotScore;
+
+            // check if we have a strike
+            if (frames.Last.Value.firstThrow == 10)
+            {
+                Debug.Log("SRTIKE!");
+                EndFrame();
+                StartNewFrame();
+            }
+            else {
+                _shotState = ShotState.Second;
+            }
+
             currShotScore = 0;
-            _shotState = ShotState.Second;
         }
         else {
             Debug.Log("Second shot score: " + currShotScore);
             frames.Last.Value.secondThrow = currShotScore - frames.Last.Value.firstThrow;
             currShotScore = 0;
             _shotState = ShotState.First;
+            EndFrame();
+            StartNewFrame();
         }
+
+        UpdateScores();
+        PrintFrames();
     }
 
     IEnumerator SweepAndSetMechanism() {
@@ -129,6 +153,27 @@ public class GameManager : MonoBehaviour {
         pinSweeperScript.SweeperUp();
     }
 
+    IEnumerator SweepAndResetMechanism() {
+        pinSweeperScript.SweeperDown();
+        yield return new WaitForSeconds(1.25f);
+
+        // the pin sweeper sweeps and unsweeps
+        pinSweeperScript.SweeperSweep();
+        yield return new WaitForSeconds(0.55f);
+
+        pinSweeperScript.SweeperUnsweep();
+        yield return new WaitForSeconds(0.55f);
+
+        SetShotScore();
+
+        // last, the pin setter goes down and drops the pins
+        pinSetterScript.ActivateSetter();
+        yield return new WaitForSeconds(2.10f);
+
+        // the sweeper goes up
+        pinSweeperScript.SweeperUp();
+    }
+
     private void StartNewFrame() {
         Frame frame = new Frame();
         frame.frameIndex = currFrame;
@@ -142,13 +187,21 @@ public class GameManager : MonoBehaviour {
 
         // set new pins
         ResetPins();
-
     }
 
     private void ResetPins() {
         foreach (Pin pin in pins) {
-            pin.gameObject.SetActive(true);
+            pin.gameObject.transform.parent = pinParentTransform;
+
             pin.ResetPin();
+        }
+
+        pinParentTransform.position = pinsNewFrameStart.position;
+
+        foreach (Pin pin in pins)
+        {
+            // pin.gameObject.SetActive(true);
+            // pin.gameObject.transform.parent = pinSetterScript.gameObject.transform;
         }
 
         pinSetterScript.InitNewFrame();

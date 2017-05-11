@@ -71,7 +71,6 @@ public class PinSetter : MonoBehaviour {
     public void InitNewFrame() {
         isHoldingPins = true;
         isFullyDown = false;
-        ActivateSetter();
     }
 
     void Start () {
