@@ -7,46 +7,65 @@ public class PinSetter : MonoBehaviour {
     private Animator animator;
     private bool isFullyDown = false;
     private bool isHoldingPins = false;
+    private int _pinsBeingHeld = 0;
+
+    [HideInInspector]
+    public int pinsHeld {
+        get { return _pinsBeingHeld; }
+    }
 
     public Transform pinsParentTransform;
     public Transform pinUpInitialPosition;
     public GameObject pinsPrefab;
+
+    private List<GameObject> pickUpPins;
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Pin")) {
+            pickUpPins.Add(other.gameObject);
+        }
+    }
 
     public void ActivateSetter() {
         animator.SetTrigger("activate");
     }
 
     public void OnPinSetterDown() {
-        isFullyDown = true;
-        isHoldingPins = !isHoldingPins;
+        // pick up the pins...
+        if (!isHoldingPins)
+        {
+            PickUpPins();
+        }
+        // or drop the pins...
+        else
+        {
+            ReleasePins();
+        }
+    }
+
+    private void PickUpPins() {
+        foreach (GameObject pin in pickUpPins) {
+            pin.GetComponent<Rigidbody>().isKinematic = true;
+            pin.transform.parent = transform;
+        }
+        isHoldingPins = true;
+    }
+
+    private void ReleasePins() {
+        foreach (GameObject pin in pickUpPins)
+        {
+            pin.GetComponent<Rigidbody>().isKinematic = false;
+            pin.transform.parent = pinsParentTransform;
+        }
+        isHoldingPins = false;
+        pickUpPins.Clear();
     }
 
     public void OnPinSetterUp() {
-        isFullyDown = false;
-
-        if (isHoldingPins) {
-            BaseEventManager.PinsPickedUp();
-        }
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        if (!isFullyDown) {
-            return;
-        }
-
-        if (other.gameObject.CompareTag("Pin")) {
-            if (isHoldingPins)
-            {
-                other.gameObject.GetComponent<Rigidbody>().isKinematic = true;
-                other.gameObject.transform.parent = transform;
-            }
-            else
-            {
-                other.gameObject.GetComponent<Rigidbody>().isKinematic = false;
-                other.gameObject.transform.parent = pinsParentTransform;
-            }
-        }
+        // count the number of pins...
+        _pinsBeingHeld = transform.childCount;
+        Debug.Log("num pins being held: " + _pinsBeingHeld);
     }
 
     public void InitNewFrame() {
@@ -55,8 +74,8 @@ public class PinSetter : MonoBehaviour {
         ActivateSetter();
     }
 
-    // Use this for initialization
-    void Awake () {
+    void Start () {
         animator = GetComponent<Animator>();
+        pickUpPins = new List<GameObject>();
 	}
 }

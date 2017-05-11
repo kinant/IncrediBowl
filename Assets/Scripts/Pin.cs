@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Pin : MonoBehaviour {
     private Vector3 startPos;
+    public bool isHeldByPinSetter = false;
 
     private void Start()
     {
