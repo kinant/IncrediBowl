@@ -94,8 +94,15 @@ public class GameManager : MonoBehaviour {
             {
                 frames.Last.Value.isStrike = true;
                 frames.Last.Value.isPendingScore = true;
-                EndFrame();
-                StartNewFrame();
+
+                if (currFrame != 11)
+                {
+                    EndFrame();
+                    StartNewFrame();
+                }
+                else {
+                    _shotState = ShotState.Second;
+                }
             }
             else {
                 _shotState = ShotState.Second;
@@ -179,14 +186,20 @@ public class GameManager : MonoBehaviour {
 
     private void EndFrame() {
 
-        if (currFrame == 10) {
-            Debug.Log("GAME OVER!");
+        if (currFrame == 10 && !frames.Last.Value.isStrike)
+        {
+            Debug.Log("GAME OVER ON FRAME 10!");
         }
-
-        _shotState = ShotState.First;
-        currFrame++;
-        // set new pins
-        ResetPins();
+        else if (currFrame == 11) {
+            Debug.Log("GAME OVER ON FRAME 10+");
+        }
+        else
+        {
+            _shotState = ShotState.First;
+            currFrame++;
+            // set new pins
+            ResetPins();
+        }
     }
 
     private void ResetPins() {
@@ -254,7 +267,7 @@ public class GameManager : MonoBehaviour {
     private int GetSpareBonus(LinkedListNode<Frame> node)
     {
         // check that we have the next shot available
-        if (node.Next == null) {
+        if (node.Next == null || node.Next.Value.firstThrow == -1) {
             return -1;
         }
 
@@ -268,6 +281,10 @@ public class GameManager : MonoBehaviour {
         if (node.Next == null)
         {
             return -1;
+        }
+
+        if (node.Value.isStrike && node.Value.frameIndex == 10) {
+            return GetLastFrameStrikeBonus(node);
         }
 
         // CASE 1: DOUBLE STRIKES
@@ -307,6 +324,37 @@ public class GameManager : MonoBehaviour {
         }
 
         return node.Previous.Value.frameScore;
+    }
+
+    private int GetLastFrameStrikeBonus(LinkedListNode<Frame> node) {
+        // we are on the 10th frame
+        if (node.Next == null) {
+            return -1;
+        }
+
+        if (node.Next.Value.firstThrow == -1 || node.Next.Value.secondThrow == -1) {
+            return -1;
+        }
+
+        return node.Next.Value.firstThrow + node.Next.Value.secondThrow;
+
+    }
+
+    private int GetLastFrameSpareBonus(LinkedListNode<Frame> node)
+    {
+        // we are on the 10th frame
+        if (node.Next == null)
+        {
+            return -1;
+        }
+
+        if (node.Next.Value.firstThrow == -1)
+        {
+            return -1;
+        }
+
+        return node.Next.Value.firstThrow;
+
     }
 
     private void PrintFrames() {
