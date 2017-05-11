@@ -4,19 +4,11 @@ using UnityEngine;
 
 public class PinSetter : MonoBehaviour {
 
+    public Transform pinsParentTransform;
+
     private Animator animator;
     private bool isFullyDown = false;
     private bool isHoldingPins = false;
-    private int _pinsBeingHeld = 0;
-
-    [HideInInspector]
-    public int pinsHeld {
-        get { return _pinsBeingHeld; }
-    }
-
-    public Transform pinsParentTransform;
-    public Transform pinUpInitialPosition;
-    public GameObject pinsPrefab;
 
     private List<GameObject> pickUpPins;
 
@@ -24,6 +16,14 @@ public class PinSetter : MonoBehaviour {
     {
         if (other.gameObject.CompareTag("Pin")) {
             pickUpPins.Add(other.gameObject);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Pin"))
+        {
+            pickUpPins.Remove(other.gameObject);
         }
     }
 
@@ -44,7 +44,7 @@ public class PinSetter : MonoBehaviour {
         }
     }
 
-    private void PickUpPins() {
+    public void PickUpPins() {
         foreach (GameObject pin in pickUpPins) {
             pin.GetComponent<Rigidbody>().isKinematic = true;
             pin.transform.parent = transform;
@@ -56,21 +56,15 @@ public class PinSetter : MonoBehaviour {
         foreach (GameObject pin in pickUpPins)
         {
             pin.GetComponent<Rigidbody>().isKinematic = false;
+            pin.GetComponent<Rigidbody>().useGravity = true;
             pin.transform.parent = pinsParentTransform;
         }
         isHoldingPins = false;
         pickUpPins.Clear();
     }
 
-    public void OnPinSetterUp() {
-        // count the number of pins...
-        _pinsBeingHeld = transform.childCount;
-        Debug.Log("num pins being held: " + _pinsBeingHeld);
-    }
-
     public void InitNewFrame() {
-        isHoldingPins = true;
-        isFullyDown = false;
+        // ActivateSetter();
     }
 
     void Start () {

@@ -22,9 +22,11 @@ public class GameManager : MonoBehaviour {
 
     public PinSetter pinSetterScript;
     public PinSweeper pinSweeperScript;
+    public ScoreTrigger scoreTrigger;
 
     public LinkedList<Frame> frames;
     public Pin[] pins;
+    public Transform[] pinStartPositions;
     public Transform pinParentTransform;
     public Transform pinsNewFrameStart;
 
@@ -33,7 +35,7 @@ public class GameManager : MonoBehaviour {
     private int pinsPickedUp = 0;
 
     private int currShotScore {
-        get { return MAX_PINS - pinSetterScript.pinsHeld; }
+        get { return MAX_PINS - scoreTrigger.numPinsStanding; }
         set { ; }
     }
 
@@ -97,7 +99,7 @@ public class GameManager : MonoBehaviour {
     private void SetShotScore() {
         if (_shotState == ShotState.First)
         {
-            Debug.Log("First shot score: " + currShotScore);
+           // Debug.Log("First shot score: " + currShotScore);
             frames.Last.Value.firstThrow = currShotScore;
 
             // check if we have a strike
@@ -114,7 +116,7 @@ public class GameManager : MonoBehaviour {
             currShotScore = 0;
         }
         else {
-            Debug.Log("Second shot score: " + currShotScore);
+            // Debug.Log("Second shot score: " + currShotScore);
             frames.Last.Value.secondThrow = currShotScore - frames.Last.Value.firstThrow;
             currShotScore = 0;
             _shotState = ShotState.First;
@@ -183,27 +185,18 @@ public class GameManager : MonoBehaviour {
     private void EndFrame() {
         _shotState = ShotState.First;
         currFrame++;
-        StartNewFrame();
-
         // set new pins
         ResetPins();
     }
 
     private void ResetPins() {
-        foreach (Pin pin in pins) {
-            pin.gameObject.transform.parent = pinParentTransform;
-
-            pin.ResetPin();
+        for (int i = 0; i < MAX_PINS; i++) {
+            pins[i].gameObject.transform.parent = pinSetterScript.gameObject.transform;
+            pins[i].transform.position = pinStartPositions[i].position;
+            pins[i].ResetPin();
         }
 
-        pinParentTransform.position = pinsNewFrameStart.position;
-
-        foreach (Pin pin in pins)
-        {
-            // pin.gameObject.SetActive(true);
-            // pin.gameObject.transform.parent = pinSetterScript.gameObject.transform;
-        }
-
+        pinSetterScript.PickUpPins();
         pinSetterScript.InitNewFrame();
     }
 
