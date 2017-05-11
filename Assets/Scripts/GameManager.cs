@@ -11,7 +11,7 @@ public class Frame
     public int secondThrow = -1;
     public bool isSpare;
     public bool isStrike;
-    public int frameScore = -1;
+    public int frameScore = 0;
     public bool isPendingScore = true;
 }
 
@@ -221,8 +221,10 @@ public class GameManager : MonoBehaviour {
             // get the strike bonus
             int bonus = GetStrikeBonus(frameNode);
 
-            if (bonus > 0)
+            if (bonus != -1)
             {
+                Debug.Log("Bonus Obtained - bonus: " + bonus + " \n shot: " + frame.firstThrow + "\n prev: " + GetPreviousFrameScore(frameNode));
+
                 frame.frameScore = frame.firstThrow + bonus + GetPreviousFrameScore(frameNode);
                 frame.isPendingScore = false;
             }
@@ -232,7 +234,10 @@ public class GameManager : MonoBehaviour {
             // get the spare bonus...
             int bonus = GetSpareBonus(frameNode);
 
-            if (bonus > 0) {
+            if (bonus != -1) {
+
+                Debug.Log("Bonus Obtained - bonus: " + bonus + " \n shot: " + frame.firstThrow + "\n prev: " + GetPreviousFrameScore(frameNode));
+
                 frame.frameScore = frame.firstThrow + frame.secondThrow + bonus + GetPreviousFrameScore(frameNode);
                 frame.isPendingScore = false;
             }
@@ -260,16 +265,18 @@ public class GameManager : MonoBehaviour {
     private int GetStrikeBonus(LinkedListNode<Frame> node)
     {
         // check that we have at least one future frame
-        if(node.Next == null)
+        if (node.Next == null)
         {
             return -1;
         }
 
         // CASE 1: DOUBLE STRIKES
-        if (node.Next.Value.isStrike) {
+        if (node.Next.Value.isStrike)
+        {
 
             // check that we have another future frame
-            if (node.Next.Next == null) {
+            if (node.Next.Next == null || node.Next.Next.Value.firstThrow == -1)
+            {
                 return -1;
             }
 
@@ -279,12 +286,17 @@ public class GameManager : MonoBehaviour {
 
         // CASE 2: NOT DOUBLE STRIKES
         // we need the two values for this frame
-        if (node.Next.Value.firstThrow < 0 || node.Next.Value.secondThrow < 0) {
+        else if ((node.Next.Value.firstThrow == -1 || node.Next.Value.secondThrow == -1) && !node.Next.Value.isStrike)
+        {
             return -1;
         }
+        else
+        {
 
-        // we have the next two values for the frame
-        return node.Next.Value.firstThrow + node.Next.Value.secondThrow;
+            // we have the next two values for the frame
+            return node.Next.Value.firstThrow + node.Next.Value.secondThrow;
+
+        }
     }
 
     private int GetPreviousFrameScore(LinkedListNode<Frame> node)
