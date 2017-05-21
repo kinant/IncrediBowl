@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour {
     }
 
     private int currFrame;
+    private bool startingNewGame = false;
 
     private static GameManager _instance;
 
@@ -77,6 +78,11 @@ public class GameManager : MonoBehaviour {
     }
 
     private void HandleBallThrow() {
+        if (frames.Last.Value.frameIndex == 12) {
+            StartCoroutine(SweepAndResetMechanism());
+            return;
+        }
+
         // ball thrown, start pin sweeper and pin setter mechanism
         if (_shotState == ShotState.First)
         {
@@ -99,9 +105,9 @@ public class GameManager : MonoBehaviour {
                 frames.Last.Value.isStrike = true;
                 frames.Last.Value.isPendingScore = true;
                 EndFrame();
-                StartNewFrame();
             }
-            else {
+            else
+            {
                 _shotState = ShotState.Second;
             }
 
@@ -166,11 +172,7 @@ public class GameManager : MonoBehaviour {
 
         // the sweeper goes up
         pinSweeperScript.SweeperUp();
-
-        // Reset
-        currShotScore = 0;
-        _shotState = ShotState.First;
-        StartNewFrame();
+        // StartNewFrame();
     }
 
     private void StartNewFrame() {
@@ -182,6 +184,11 @@ public class GameManager : MonoBehaviour {
 
     private void EndFrame() {
 
+        if (startingNewGame) {
+            startingNewGame = false;
+            return;
+        }
+
         if (currFrame == 10 && !frames.Last.Value.isStrike)
         {
             Debug.Log("GAME OVER ON FRAME 10!");
@@ -192,17 +199,20 @@ public class GameManager : MonoBehaviour {
             Debug.Log("GAME OVER ON FRAME 11");
             EndGame();
         }
-        else if (currFrame == 12) {
+        else if (currFrame == 12)
+        {
             Debug.Log("GAME OVER ON FRAME 12");
             EndGame();
         }
-        else
-        {
-            _shotState = ShotState.First;
+        else {
+            // increase currFrame count
             currFrame++;
-            // set new pins
-            ResetPins();
         }
+
+        // Reset
+        _shotState = ShotState.First;
+        ResetPins();
+        StartNewFrame();
     }
 
     private void EndGame() {
@@ -216,9 +226,9 @@ public class GameManager : MonoBehaviour {
     }
 
     private void StartNewGame() {
+        startingNewGame = true;
         frames.Clear();
         currFrame = 1;
-        StartNewFrame();
     }
 
     private void ResetPins() {
