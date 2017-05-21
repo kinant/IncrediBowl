@@ -189,12 +189,12 @@ public class GameManager : MonoBehaviour {
             return;
         }
 
-        if (currFrame == 10 && !frames.Last.Value.isStrike)
+        if (currFrame == 10 && !frames.Last.Value.isStrike && !frames.Last.Value.isSpare)
         {
             Debug.Log("GAME OVER ON FRAME 10!");
             EndGame();
         }
-        else if (currFrame == 11 && !frames.Last.Value.isStrike)
+        else if (currFrame == 11 && (!frames.Last.Value.isStrike || frames.Last.Previous.Value.isSpare))
         {
             Debug.Log("GAME OVER ON FRAME 11");
             EndGame();
