@@ -109,13 +109,11 @@ public class GameManager : MonoBehaviour {
             if (currFrame == 10) {
                 lastFrameScoreUI.SetFrameThrowOneText(currShotScore);
             }
-
             else if (currFrame == 11) {
-                lastFrameScoreUI.SetFrameThrowTwoText(currShotScore);
+                lastFrameScoreUI.SetFrameThrowTwoText(currShotScore, currFrame);
             }
-
             else if (currFrame == 12) {
-                lastFrameScoreUI.SetFrameThrowTwoText(currShotScore);
+                lastFrameScoreUI.SetFrameThrowThreeText(currShotScore, currFrame);
             }
             else
             {
@@ -144,12 +142,12 @@ public class GameManager : MonoBehaviour {
             
             if (currFrame == 10)
             {
-                lastFrameScoreUI.SetFrameThrowOneText(currShotScore);
+                lastFrameScoreUI.SetFrameThrowTwoText(currShotScore, currFrame);
             }
 
             else if (currFrame == 11)
             {
-                lastFrameScoreUI.SetFrameThrowThreeText(currShotScore);
+                lastFrameScoreUI.SetFrameThrowThreeText(currShotScore, currFrame);
             }
             else {
                 // set the score in the scoreboard...
@@ -160,18 +158,21 @@ public class GameManager : MonoBehaviour {
 
                 if (currFrame == 10)
                 {
-                    lastFrameScoreUI.SetFrameThrowTwoText(10);
+                    lastFrameScoreUI.SetFrameThrowTwoText(10, currFrame);
+                    frames.Last.Value.isSpare = true;
+
                 }
                 else if (currFrame == 11)
                 {
-                    lastFrameScoreUI.SetFrameThrowThreeText(10);
+                    lastFrameScoreUI.SetFrameThrowThreeText(10, currFrame);
                 }
                 else
                 {
 
                     frameScoresUI[currFrame - 1].SetFrameThrowTwoText(10);
-                    frames.Last.Value.isSpare = true;
                 }
+
+                frames.Last.Value.isSpare = true;
             }
         }
 

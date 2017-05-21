@@ -14,13 +14,14 @@ public class TenthFrameScore : MonoBehaviour {
     {
         throw1.text = " ";
         throw2.text = " ";
+        throw3.text = " ";
         frameTotal.text = " ";
     }
 
     public void SetFrameThrowOneText(int score) {
         if (score == 10)
         {
-            throw2.text = "X";
+            throw1.text = "X";
         }
         else
         {
@@ -28,27 +29,54 @@ public class TenthFrameScore : MonoBehaviour {
         }
     }
 
-    public void SetFrameThrowTwoText(int score)
+    public void SetFrameThrowTwoText(int score, int frameIndex)
     {
-        if (score == 10)
+        if (frameIndex == 10)
         {
-            throw2.text = "/";
+            if (score == 10)
+            {
+                throw2.text = "/";
+            }
+            else
+            {
+                throw2.text = score.ToString();
+            }
         }
-        else
-        {
-            throw2.text = score.ToString();
+        else {
+            if (score == 10)
+            {
+                throw2.text = "X";
+            }
+            else
+            {
+                throw2.text = score.ToString();
+            }
         }
     }
 
-    public void SetFrameThrowThreeText(int score)
+    public void SetFrameThrowThreeText(int score, int frameIndex)
     {
-        if (score == 10)
+        if (frameIndex == 12)
         {
-            throw2.text = "/";
+            if (score == 10)
+            {
+                throw3.text = "X";
+            }
+            else
+            {
+                throw3.text = score.ToString();
+            }
         }
         else
         {
-            throw2.text = score.ToString();
+            if (score == 10)
+            {
+                throw3.text = "/";
+            }
+            else
+            {
+                throw3.text = score.ToString();
+            }
         }
     }
 
