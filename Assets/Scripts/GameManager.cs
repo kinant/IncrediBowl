@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [Serializable]
@@ -25,6 +26,8 @@ public class GameManager : MonoBehaviour {
     public PinSweeper pinSweeperScript;
     public ScoreTrigger scoreTrigger;
 
+    public int startingFrameIndex = 1;
+
     public LinkedList<Frame> frames;
     public Pin[] pins;
     public Transform[] pinStartPositions;
@@ -40,7 +43,7 @@ public class GameManager : MonoBehaviour {
         set { ; }
     }
 
-    private int currFrame = 1;
+    private int currFrame;
 
     private static GameManager _instance;
 
@@ -68,6 +71,7 @@ public class GameManager : MonoBehaviour {
 
     private void Start()
     {
+        currFrame = startingFrameIndex;
         frames = new LinkedList<Frame>();
         StartNewFrame();
     }
@@ -94,15 +98,8 @@ public class GameManager : MonoBehaviour {
             {
                 frames.Last.Value.isStrike = true;
                 frames.Last.Value.isPendingScore = true;
-
-                if (currFrame != 11)
-                {
-                    EndFrame();
-                    StartNewFrame();
-                }
-                else {
-                    _shotState = ShotState.Second;
-                }
+                EndFrame();
+                StartNewFrame();
             }
             else {
                 _shotState = ShotState.Second;
@@ -162,7 +159,6 @@ public class GameManager : MonoBehaviour {
         pinSweeperScript.SweeperUnsweep();
         yield return new WaitForSeconds(0.55f);
 
-        // SetShotScore();
         EndFrame();
         // last, the pin setter goes down and drops the pins
         pinSetterScript.ActivateSetter();
@@ -189,9 +185,16 @@ public class GameManager : MonoBehaviour {
         if (currFrame == 10 && !frames.Last.Value.isStrike)
         {
             Debug.Log("GAME OVER ON FRAME 10!");
+            EndGame();
         }
-        else if (currFrame == 11) {
-            Debug.Log("GAME OVER ON FRAME 10+");
+        else if (currFrame == 11 && !frames.Last.Value.isStrike)
+        {
+            Debug.Log("GAME OVER ON FRAME 11");
+            EndGame();
+        }
+        else if (currFrame == 12) {
+            Debug.Log("GAME OVER ON FRAME 12");
+            EndGame();
         }
         else
         {
@@ -200,6 +203,22 @@ public class GameManager : MonoBehaviour {
             // set new pins
             ResetPins();
         }
+    }
+
+    private void EndGame() {
+        // Frame lastFrame = frames.ElementAt(9);
+        // Debug.Log("GAME HAS ENDED WITH SCORE OF: " + lastFrame.frameScore);
+
+        // next we reset the game to play again
+        UpdateScores();
+        PrintFrames();
+        StartNewGame();
+    }
+
+    private void StartNewGame() {
+        frames.Clear();
+        currFrame = 1;
+        StartNewFrame();
     }
 
     private void ResetPins() {
@@ -283,10 +302,6 @@ public class GameManager : MonoBehaviour {
             return -1;
         }
 
-        if (node.Value.isStrike && node.Value.frameIndex == 10) {
-            return GetLastFrameStrikeBonus(node);
-        }
-
         // CASE 1: DOUBLE STRIKES
         if (node.Next.Value.isStrike)
         {
@@ -324,37 +339,6 @@ public class GameManager : MonoBehaviour {
         }
 
         return node.Previous.Value.frameScore;
-    }
-
-    private int GetLastFrameStrikeBonus(LinkedListNode<Frame> node) {
-        // we are on the 10th frame
-        if (node.Next == null) {
-            return -1;
-        }
-
-        if (node.Next.Value.firstThrow == -1 || node.Next.Value.secondThrow == -1) {
-            return -1;
-        }
-
-        return node.Next.Value.firstThrow + node.Next.Value.secondThrow;
-
-    }
-
-    private int GetLastFrameSpareBonus(LinkedListNode<Frame> node)
-    {
-        // we are on the 10th frame
-        if (node.Next == null)
-        {
-            return -1;
-        }
-
-        if (node.Next.Value.firstThrow == -1)
-        {
-            return -1;
-        }
-
-        return node.Next.Value.firstThrow;
-
     }
 
     private void PrintFrames() {
