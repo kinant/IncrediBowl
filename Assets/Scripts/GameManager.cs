@@ -74,7 +74,7 @@ public class GameManager : MonoBehaviour {
 
     private void Start()
     {
-        Debug.Log("FRAME UI COUNT: " + frameScoresUI.Length);
+        // Debug.Log("FRAME UI COUNT: " + frameScoresUI.Length);
 
         currFrame = startingFrameIndex;
         frames = new LinkedList<Frame>();
@@ -102,7 +102,7 @@ public class GameManager : MonoBehaviour {
         {
             frames.Last.Value.firstThrow = currShotScore;
 
-            Debug.Log("FRAME UI INDEX: " + (currFrame - 1));
+            // Debug.Log("FRAME UI INDEX: " + (currFrame - 1));
             // set the score in the scoreboard...
  
 
@@ -182,7 +182,7 @@ public class GameManager : MonoBehaviour {
         }
 
         UpdateScores();
-        PrintFrames();
+        // PrintFrames();
     }
 
     IEnumerator SweepAndSetMechanism() {
@@ -281,7 +281,7 @@ public class GameManager : MonoBehaviour {
 
         // next we reset the game to play again
         UpdateScores();
-        PrintFrames();
+        // PrintFrames();
         StartNewGame();
     }
 
