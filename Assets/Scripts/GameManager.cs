@@ -265,8 +265,6 @@ public class GameManager : MonoBehaviour {
 
             if (bonus != -1)
             {
-                Debug.Log("Bonus Obtained - bonus: " + bonus + " \n shot: " + frame.firstThrow + "\n prev: " + GetPreviousFrameScore(frameNode));
-
                 frame.frameScore = frame.firstThrow + bonus + GetPreviousFrameScore(frameNode);
                 frame.isPendingScore = false;
             }
@@ -277,9 +275,6 @@ public class GameManager : MonoBehaviour {
             int bonus = GetSpareBonus(frameNode);
 
             if (bonus != -1) {
-
-                Debug.Log("Bonus Obtained - bonus: " + bonus + " \n shot: " + frame.firstThrow + "\n prev: " + GetPreviousFrameScore(frameNode));
-
                 frame.frameScore = frame.firstThrow + frame.secondThrow + bonus + GetPreviousFrameScore(frameNode);
                 frame.isPendingScore = false;
             }
