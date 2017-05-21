@@ -31,6 +31,7 @@ public class GameManager : MonoBehaviour {
     public LinkedList<Frame> frames;
     public Pin[] pins;
     public Transform[] pinStartPositions;
+    public FrameScore[] frameScoresUI;
     public Transform pinParentTransform;
     public Transform pinsNewFrameStart;
 
@@ -72,6 +73,8 @@ public class GameManager : MonoBehaviour {
 
     private void Start()
     {
+        Debug.Log("FRAME UI COUNT: " + frameScoresUI.Length);
+
         currFrame = startingFrameIndex;
         frames = new LinkedList<Frame>();
         StartNewFrame();
@@ -97,6 +100,11 @@ public class GameManager : MonoBehaviour {
         if (_shotState == ShotState.First)
         {
             frames.Last.Value.firstThrow = currShotScore;
+
+            Debug.Log("FRAME UI INDEX: " + (currFrame - 1));
+            // set the score in the scoreboard...
+            frameScoresUI[currFrame - 1].SetFrameThrowOneText(currShotScore);
+
             pinsRemaining = scoreTrigger.numPinsStanding;
 
             // check if we have a strike
@@ -115,8 +123,12 @@ public class GameManager : MonoBehaviour {
         }
         else {
             frames.Last.Value.secondThrow = currShotScore;
+            
+            // set the score in the scoreboard...
+            frameScoresUI[currFrame - 1].SetFrameThrowTwoText(currShotScore);
 
             if (frames.Last.Value.firstThrow + frames.Last.Value.secondThrow == 10) {
+                frameScoresUI[currFrame - 1].SetFrameThrowTwoText(10);
                 frames.Last.Value.isSpare = true;
             }
         }
@@ -266,6 +278,10 @@ public class GameManager : MonoBehaviour {
             if (bonus != -1)
             {
                 frame.frameScore = frame.firstThrow + bonus + GetPreviousFrameScore(frameNode);
+
+                // set the score in the scoreboard...
+                frameScoresUI[frame.frameIndex - 1].SetFrameTotalText(frame.frameScore);
+
                 frame.isPendingScore = false;
             }
         }
@@ -276,6 +292,7 @@ public class GameManager : MonoBehaviour {
 
             if (bonus != -1) {
                 frame.frameScore = frame.firstThrow + frame.secondThrow + bonus + GetPreviousFrameScore(frameNode);
+                frameScoresUI[frame.frameIndex - 1].SetFrameTotalText(frame.frameScore);
                 frame.isPendingScore = false;
             }
 
@@ -283,6 +300,7 @@ public class GameManager : MonoBehaviour {
         else {
             if (frame.secondThrow != -1) {
                 frame.frameScore = frame.firstThrow + frame.secondThrow + GetPreviousFrameScore(frameNode);
+                frameScoresUI[frame.frameIndex - 1].SetFrameTotalText(frame.frameScore);
                 frame.isPendingScore = false;
             }
         }

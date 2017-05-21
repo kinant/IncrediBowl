@@ -17,12 +17,26 @@ public class FrameScore : MonoBehaviour {
     }
 
     public void SetFrameThrowOneText(int score) {
-        throw1.text = score.ToString();
+        if (score == 10)
+        {
+            throw2.text = "X";
+        }
+        else
+        {
+            throw1.text = score.ToString();
+        }
     }
 
     public void SetFrameThrowTwoText(int score)
     {
-        throw2.text = score.ToString();
+        if (score == 10)
+        {
+            throw2.text = "/";
+        }
+        else
+        {
+            throw2.text = score.ToString();
+        }
     }
 
     public void SetFrameTotalText(int score)
