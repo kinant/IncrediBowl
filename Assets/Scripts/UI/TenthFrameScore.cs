@@ -49,7 +49,7 @@ public class TenthFrameScore : MonoBehaviour {
             }
             else
             {
-                throw2.text = score.ToString();
+                throw3.text = score.ToString();
             }
         }
     }

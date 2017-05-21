@@ -110,7 +110,13 @@ public class GameManager : MonoBehaviour {
                 lastFrameScoreUI.SetFrameThrowOneText(currShotScore);
             }
             else if (currFrame == 11) {
-                lastFrameScoreUI.SetFrameThrowTwoText(currShotScore, currFrame);
+                if (frames.Last.Previous.Value.isStrike)
+                {
+                    lastFrameScoreUI.SetFrameThrowTwoText(currShotScore, currFrame);
+                }
+                else {
+                    lastFrameScoreUI.SetFrameThrowThreeText(currShotScore, currFrame);
+                }
             }
             else if (currFrame == 12) {
                 lastFrameScoreUI.SetFrameThrowThreeText(currShotScore, currFrame);
@@ -127,7 +133,9 @@ public class GameManager : MonoBehaviour {
             if (frames.Last.Value.firstThrow == 10)
             {
                 frames.Last.Value.isStrike = true;
-                frames.Last.Value.isPendingScore = true;
+                EndFrame();
+            }
+            else if (currFrame == 11 || currFrame == 12) {
                 EndFrame();
             }
             else
@@ -159,8 +167,6 @@ public class GameManager : MonoBehaviour {
                 if (currFrame == 10)
                 {
                     lastFrameScoreUI.SetFrameThrowTwoText(10, currFrame);
-                    frames.Last.Value.isSpare = true;
-
                 }
                 else if (currFrame == 11)
                 {
@@ -171,7 +177,6 @@ public class GameManager : MonoBehaviour {
 
                     frameScoresUI[currFrame - 1].SetFrameThrowTwoText(10);
                 }
-
                 frames.Last.Value.isSpare = true;
             }
         }
