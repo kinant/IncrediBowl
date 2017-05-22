@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour {
     public PinSetter pinSetterScript;
     public PinSweeper pinSweeperScript;
     public ScoreTrigger scoreTrigger;
+    public LargeScreenMoviePlayer moviePlayer;
 
     public int startingFrameIndex = 1;
 
@@ -133,6 +134,10 @@ public class GameManager : MonoBehaviour {
             if (frames.Last.Value.firstThrow == 10)
             {
                 frames.Last.Value.isStrike = true;
+
+                // play the video
+                moviePlayer.PlayVideo(LargeScreenMoviePlayer.VideoType.Strike);
+
                 EndFrame();
             }
             else if (currFrame == 11 || currFrame == 12) {
@@ -177,6 +182,8 @@ public class GameManager : MonoBehaviour {
 
                     frameScoresUI[currFrame - 1].SetFrameThrowTwoText(10);
                 }
+
+                moviePlayer.PlayVideo(LargeScreenMoviePlayer.VideoType.Spare);
                 frames.Last.Value.isSpare = true;
             }
         }
