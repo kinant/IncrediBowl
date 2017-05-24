@@ -50,6 +50,7 @@ public class GameManager : MonoBehaviour {
     private bool startingNewGame = false;
 
     private static GameManager _instance;
+    private bool newGameStarted = false;
 
     public static GameManager Instance {
         get { return _instance; }
@@ -101,6 +102,11 @@ public class GameManager : MonoBehaviour {
     private void SetShotScore() {
         if (_shotState == ShotState.First)
         {
+            if (startingNewGame && currFrame == 1) {
+                ClearScores();
+                startingNewGame = false;
+            }
+
             frames.Last.Value.firstThrow = currShotScore;
 
             // Debug.Log("FRAME UI INDEX: " + (currFrame - 1));
@@ -439,6 +445,14 @@ public class GameManager : MonoBehaviour {
         }
 
         return node.Previous.Value.frameScore;
+    }
+
+    private void ClearScores() {
+        foreach (FrameScore f in frameScoresUI) {
+            f.Clear();
+        }
+
+        lastFrameScoreUI.Clear();
     }
 
     private void PrintFrames() {

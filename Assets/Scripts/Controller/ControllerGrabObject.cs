@@ -131,12 +131,8 @@ public class ControllerGrabObject : MonoBehaviour
 
         // if we are holding a ball, we have to set its "isBeingHeld" ball to true
         // this is so the ball knows when it is being held by the user
-        /*
-        if (objectInHand.GetComponent<Ball>())
-        {
-            objectInHand.GetComponent<Ball>().isBeingHeld = true;
-        }
-        */
+       
+        
         // we null out the colliding object, since it is now attached to the controller
         collidingObject = null;
 
@@ -161,6 +157,12 @@ public class ControllerGrabObject : MonoBehaviour
             objectInHand.GetComponent<Ball>().isBeingHeld = false;
         }
         */
+
+        if (objectInHand.GetComponent<BowlingBall>())
+        {
+            objectInHand.GetComponent<BowlingBall>().FireBall();
+        }
+
         // turn the colliders back on
         ToggleColliders(objectInHand, true);
 

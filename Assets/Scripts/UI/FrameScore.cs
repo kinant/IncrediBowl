@@ -11,6 +11,10 @@ public class FrameScore : MonoBehaviour {
 
     private void Start()
     {
+        Clear();
+    }
+
+    public void Clear() {
         throw1.text = " ";
         throw2.text = " ";
         frameTotal.text = " ";

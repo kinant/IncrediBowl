@@ -12,6 +12,10 @@ public class TenthFrameScore : MonoBehaviour {
 
     private void Start()
     {
+        Clear();
+    }
+
+    public void Clear() {
         throw1.text = " ";
         throw2.text = " ";
         throw3.text = " ";
