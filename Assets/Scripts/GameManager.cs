@@ -37,6 +37,11 @@ public class GameManager : MonoBehaviour {
     public Transform pinParentTransform;
     public Transform pinsNewFrameStart;
 
+    public GameObject endMessage;
+    public GameObject bronzeTrophy;
+    public GameObject silverTrophy;
+    public GameObject goldTrophy;
+
     private ShotState _shotState = ShotState.First;
     private const int MAX_PINS = 10;
     private int pinsRemaining = MAX_PINS;
@@ -291,11 +296,42 @@ public class GameManager : MonoBehaviour {
     private void EndGame() {
         // Frame lastFrame = frames.ElementAt(9);
         // Debug.Log("GAME HAS ENDED WITH SCORE OF: " + lastFrame.frameScore);
-
+        Frame lastFrame = frames.ElementAt(9);
         // next we reset the game to play again
         UpdateScores();
+        CheckAwards(lastFrame.frameScore);
         // PrintFrames();
         StartNewGame();
+    }
+
+    private void CheckAwards(int score) {
+
+        String message;
+
+        // check for bronze trophy
+        if (score >= 50 && score < 100)
+        {
+            message = "You unlocked bronze trophy!";
+            bronzeTrophy.SetActive(true);
+        }
+        // else, check for silver trophy
+        else if (score >= 100 && score < 150)
+        {
+            message = "You unlocked silver trophy!";
+            silverTrophy.SetActive(true);
+        }
+        // else, check for gold trophy
+        else if (score >= 150) {
+            message = "You unlocked gold trophy!";
+            goldTrophy.SetActive(true);
+        }
+        // else, no award
+        else {
+            message = "You unlocked no trophy :(";
+        }
+
+        // show the message dialog
+        endMessage.SetActive(true);
     }
 
     private void StartNewGame() {
