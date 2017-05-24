@@ -330,6 +330,7 @@ public class GameManager : MonoBehaviour {
             message = "You unlocked no trophy :(";
         }
 
+        endMessage.GetComponent<EndMessage>().SetText(score, message);
         // show the message dialog
         endMessage.SetActive(true);
     }
