@@ -22,6 +22,9 @@ public class BowlingBall : MonoBehaviour {
     private bool ballInPit = false;
     private bool ballInReturn = false;
 
+    public AudioClip throwSound;
+    private AudioSource audioSource;
+
     private void OnEnable()
     {
         BaseEventManager.OnBallReachedPit += new EventHandler(HandleBallReachPit);
@@ -38,9 +41,11 @@ public class BowlingBall : MonoBehaviour {
         startPos = ballStartTransform.position;
         startRot = ballStartTransform.rotation;
         ballInReturn = true;
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void HandleBallReachPit() {
+        audioSource.Stop();
         ballInPit = true;
         ballInReturn = false;
         ResetBall();
@@ -63,6 +68,14 @@ public class BowlingBall : MonoBehaviour {
         isMoving = true;
         ballInPit = false;
         ballInReturn = false;
+        audioSource.Play();
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Lane")) {
+            audioSource.PlayOneShot(throwSound);
+        }
     }
 
     // Update is called once per frame

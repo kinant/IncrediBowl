@@ -42,6 +42,10 @@ public class GameManager : MonoBehaviour {
     public GameObject silverTrophy;
     public GameObject goldTrophy;
 
+    public AudioClip cheerSound;
+
+    private AudioSource audioSource;
+
     private ShotState _shotState = ShotState.First;
     private const int MAX_PINS = 10;
     private int pinsRemaining = MAX_PINS;
@@ -82,7 +86,7 @@ public class GameManager : MonoBehaviour {
     private void Start()
     {
         // Debug.Log("FRAME UI COUNT: " + frameScoresUI.Length);
-
+        audioSource = GetComponent<AudioSource>();
         currFrame = startingFrameIndex;
         frames = new LinkedList<Frame>();
         StartNewFrame();
@@ -148,6 +152,7 @@ public class GameManager : MonoBehaviour {
 
                 // play the video
                 moviePlayer.PlayVideo(LargeScreenMoviePlayer.VideoType.Strike);
+                audioSource.PlayOneShot(cheerSound);
 
                 EndFrame();
             }
@@ -194,6 +199,7 @@ public class GameManager : MonoBehaviour {
                     frameScoresUI[currFrame - 1].SetFrameThrowTwoText(10);
                 }
 
+                audioSource.PlayOneShot(cheerSound);
                 moviePlayer.PlayVideo(LargeScreenMoviePlayer.VideoType.Spare);
                 frames.Last.Value.isSpare = true;
             }
