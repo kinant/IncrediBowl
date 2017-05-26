@@ -6,12 +6,8 @@ using UnityEngine.Windows.Speech;
 
 public class SpeechRecognizer : MonoBehaviour {
 
-    public string[] keywords = new string[] { "cola", "pizza", "chocolate", "red", "green", "blue" };
+    public string[] keywords = new string[] { "large", "medium", "small", "red", "green", "blue" };
     public ConfidenceLevel confidence;
-
-    public GameObject pizzaPrefab;
-    public GameObject colaPrefab;
-    public GameObject chocoPrefab;
 
     public GameObject ball;
 
@@ -56,6 +52,15 @@ public class SpeechRecognizer : MonoBehaviour {
                 break;
             case "blue":
                 ballMaterial.color = Color.blue;
+                break;
+            case "small":
+                ball.transform.localScale = new Vector3(0.08f, 0.08f, 0.08f);
+                break;
+            case "medium":
+                ball.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+                break;
+            case "large":
+                ball.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
                 break;
             default:
                 break;
