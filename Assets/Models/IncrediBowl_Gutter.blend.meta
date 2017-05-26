@@ -10,11 +10,13 @@ ModelImporter:
     100004: Gutter1
     100006: Gutter2
     100008: //RootNode
+    100010: BowlingLane1
     400000: CappingLarge
     400002: CappingSmall
     400004: Gutter1
     400006: Gutter2
     400008: //RootNode
+    400010: BowlingLane1
     2300000: CappingLarge
     2300002: CappingSmall
     2300004: Gutter1
@@ -39,6 +41,8 @@ ModelImporter:
     resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -88,7 +92,7 @@ ModelImporter:
     rootMotionBoneName: 
     rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
-    hasExtraRoot: 0
+    hasExtraRoot: 1
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 0
