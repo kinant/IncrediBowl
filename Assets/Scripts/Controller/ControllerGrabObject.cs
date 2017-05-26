@@ -40,7 +40,7 @@ public class ControllerGrabObject : MonoBehaviour
             return;
         }
 
-        // check that we can only grab the ball, the structures and the funnel or trampoline (special cases)
+        // check that we are trying to grab the ball
         if(collidingObject.tag.Equals("Ball"))
         {
             // proceed to grab the object
@@ -58,16 +58,11 @@ public class ControllerGrabObject : MonoBehaviour
             return;
         }
 
-        // check if the object is throwable or not...
+        // check if the object is the ball
         if (objectInHand.tag.Equals("Ball"))
         {
             // Release the object and apply velocities
             ReleaseObject(e.controller.velocity, e.controller.angularVelocity, false);
-        }
-        else if (objectInHand.tag.Equals("Structure") || objectInHand.tag.Equals("Funnel") || objectInHand.tag.Equals("Trampoline")) {
-
-            // Release the object but do not add any velocities to it
-            ReleaseObject(Vector3.zero, Vector3.zero, true);
         }
     }
 
@@ -112,12 +107,6 @@ public class ControllerGrabObject : MonoBehaviour
         // once we know we can grab an object, it is assigned as the object in hand
         objectInHand = collidingObject;
 
-        // if it is tagged as a funnel or trampoline, we have a special case
-        // these have the collider inn a child, so we want to attach the parent
-        if (objectInHand.tag.Equals("Funnel") || objectInHand.tag.Equals("Trampoline")) {
-            objectInHand = objectInHand.transform.parent.gameObject;
-        }
-
         // cache the objects rigidbody
         Rigidbody rb = objectInHand.GetComponent<Rigidbody>();
 
@@ -128,36 +117,15 @@ public class ControllerGrabObject : MonoBehaviour
 
         // we set the objects parent to this controller
         objectInHand.transform.SetParent(transform);
-
-        // if we are holding a ball, we have to set its "isBeingHeld" ball to true
-        // this is so the ball knows when it is being held by the user
        
-        
         // we null out the colliding object, since it is now attached to the controller
         collidingObject = null;
-
-        // we check that the object in hand is not the ball, so that 
-        // we can remove their colliders, so that the puzzle objects do not
-        // collide with other objects.
-        if (!objectInHand.tag.Equals("Throwable"))
-        {
-            // toggle colliders off while holding an object
-            ToggleColliders(objectInHand, false);
-        }
     }
 
     // this function releases the object currently being held by the controller (if any)
     private void ReleaseObject(Vector3 velocity, Vector3 angularVelocity, bool isKinematic)
     {
-        // check if we are holding the ball, if so, we set it's flag
-        /*
-        if (objectInHand.GetComponent<Ball>())
-        {
-            // ball is no longer being held
-            objectInHand.GetComponent<Ball>().isBeingHeld = false;
-        }
-        */
-
+        // check if we are holding the ball, if so, we set fire it
         if (objectInHand.GetComponent<BowlingBall>())
         {
             objectInHand.GetComponent<BowlingBall>().FireBall();
@@ -172,11 +140,10 @@ public class ControllerGrabObject : MonoBehaviour
         // cache the rigid body
         Rigidbody rb = objectInHand.GetComponent<Rigidbody>();
 
-        // if rigidbody is found, then we set its isKinematic value (only false for the ball, true for puzzle pieces)
-        // and we apply the appropiate velocities to the items (zero for puzzle pieces). 
+        // if rigidbody is found, then we set its isKinematic value (only false for the ball)
+        // and we apply the appropiate velocities. 
         if (rb != null) {
             rb.isKinematic = isKinematic;
-            //rb.velocity = velocity * throwForce;
             rb.velocity = -velocity * throwForce;
             rb.angularVelocity = angularVelocity;
         }

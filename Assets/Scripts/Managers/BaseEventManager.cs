@@ -4,28 +4,17 @@ using UnityEngine;
 
 public delegate void EventHandler();
 
+// this class is used as a general event manager
+// intially my game worked with many events, but later on I improved the code and removed all but one of the events
 public class BaseEventManager : MonoBehaviour {
 
+    // an event handler for when the ball reaches the pit
     public static event EventHandler OnBallReachedPit;
-    public static event EventHandler OnPinReachedPit;
-    public static event EventHandler OnSweeperCompleteSweep;
-    public static event EventHandler OnPinsPickedUp;
 
+    // fire the the event
     public static void BallReachPit() {
         if (OnBallReachedPit != null) {
             OnBallReachedPit();
-        }
-    }
-
-    public static void SweepComplete() {
-        if (OnSweeperCompleteSweep != null) {
-            OnSweeperCompleteSweep();
-        }
-    }
-
-    public static void PinsPickedUp() {
-        if (OnPinsPickedUp != null) {
-            OnPinsPickedUp();
         }
     }
 }

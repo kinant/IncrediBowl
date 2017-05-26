@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 
-// this class is used to allow the player to teleport anywhere on the ground
+// this class is used to allow the player to display a laser pointer and teleport anywhere on the ground or to use
+// the pointer to click on UI buttons
 // I used the SteamVR_LaserPointer script as a reference. 
-public class Teleporter : MonoBehaviour {
+public class LaserPointerAndTeleporter : MonoBehaviour {
 
     public Color color; // laser pointer color
     public float thickness = 0.002f; // laser pointer thickness
@@ -52,13 +53,19 @@ public class Teleporter : MonoBehaviour {
     }
 
     // Event Handlers...
+    // Handle presses on Trigger
     private void HandleTriggerPress(InputEventArgs e) {
+
+        // check if we have any current contacts
         if (currContact == null) {
             return;
         }
 
+        // we only want to activate UIButtons when we press the trigger, so we check if the
+        // tag of the gameobject is an UIButton
         if (currContact.CompareTag("UIButton")) {
-            currContact.GetComponent<EndMessage>().Hide();
+            // UIButton Pressed, so we Hide the UI Element. 
+            currContact.GetComponent<CanvasMessage>().Hide();
         }
     }
 
@@ -94,7 +101,8 @@ public class Teleporter : MonoBehaviour {
             return;
         }
 
-        // before we deactivate, we will teleport the player, but only if there is a current contact
+        // before we deactivate, we will teleport the player, but only if there is a current contact and if 
+        // we are not currently making contact on an UIButton
         if (isCurrContact && !currContact.CompareTag("UIButton"))
         {
             // teleport to the location

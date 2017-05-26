@@ -16,6 +16,8 @@ public class Frame
     public bool isPendingScore = true;
 }
 
+// this script handles all game related aspects, like keeping score, setting frame scores on the UI, setting and resetting pins,
+// activating or deactivating the pin setter and sweeper, etc.
 public class GameManager : MonoBehaviour {
 
     public enum ShotState {
