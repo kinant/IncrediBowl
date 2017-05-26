@@ -40,6 +40,7 @@ public class Teleporter : MonoBehaviour {
         // subscribe to controller events
         m_input_manager.TouchpadPressed += new InputEventHandler (ActivateTeleporter);
         m_input_manager.TouchpadUnpressed += new InputEventHandler(DeactivateTeleporter);
+        m_input_manager.TriggerPressed += new InputEventHandler(HandleTriggerPress);
     }
 
     private void OnDisable()
@@ -47,9 +48,17 @@ public class Teleporter : MonoBehaviour {
         // unsubscribe to controller events
         m_input_manager.TouchpadPressed -= new InputEventHandler(ActivateTeleporter);
         m_input_manager.TouchpadUnpressed -= new InputEventHandler(DeactivateTeleporter);
+        m_input_manager.TriggerPressed += new InputEventHandler(HandleTriggerPress);
     }
 
     // Event Handlers...
+    private void HandleTriggerPress(InputEventArgs e) {
+        if (currContact.CompareTag("UIButton")) {
+            currContact.GetComponent<EndMessage>().Hide();
+        }
+    }
+
+
     // We activate the teleporter when the touchpad is pressed
     private void ActivateTeleporter(InputEventArgs e)
     {

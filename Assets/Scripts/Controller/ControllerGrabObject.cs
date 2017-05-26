@@ -177,7 +177,7 @@ public class ControllerGrabObject : MonoBehaviour
         if (rb != null) {
             rb.isKinematic = isKinematic;
             //rb.velocity = velocity * throwForce;
-            rb.velocity = -velocity;
+            rb.velocity = -velocity * throwForce;
             rb.angularVelocity = angularVelocity;
         }
 

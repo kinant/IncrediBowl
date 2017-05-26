@@ -15,6 +15,7 @@ public class BowlingBall : MonoBehaviour {
     private float travelTime = 0.0f;
 
     public Transform ballStartTransform;
+    public bool PCDebug = false;
 
     private Vector3 startPos;
     private Quaternion startRot;
@@ -64,7 +65,11 @@ public class BowlingBall : MonoBehaviour {
     }
 
     public void FireBall() {
-        m_rb.AddForce(-transform.forward * throwForce, ForceMode.Impulse);
+        if (PCDebug)
+        {
+            m_rb.AddForce(-transform.forward * throwForce, ForceMode.Impulse);
+        }
+
         isMoving = true;
         ballInPit = false;
         ballInReturn = false;
@@ -81,7 +86,7 @@ public class BowlingBall : MonoBehaviour {
     // Update is called once per frame
     void Update () {
 
-        /*
+        
         if (ballInReturn) {
             return;
         }
@@ -93,12 +98,18 @@ public class BowlingBall : MonoBehaviour {
         if (m_rb.velocity.magnitude < 0.1f) {
             ResetBall();
         }
-        */
-        if (Input.GetMouseButtonDown(0)) {
-            if (!isMoving)
+
+        if (PCDebug)
+        {
+
+            if (Input.GetMouseButtonDown(0))
             {
-                FireBall();
+                if (!isMoving)
+                {
+                    FireBall();
+                }
             }
         }
+        
     }
 }
