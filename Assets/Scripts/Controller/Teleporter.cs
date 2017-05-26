@@ -53,6 +53,10 @@ public class Teleporter : MonoBehaviour {
 
     // Event Handlers...
     private void HandleTriggerPress(InputEventArgs e) {
+        if (currContact == null) {
+            return;
+        }
+
         if (currContact.CompareTag("UIButton")) {
             currContact.GetComponent<EndMessage>().Hide();
         }
@@ -91,7 +95,7 @@ public class Teleporter : MonoBehaviour {
         }
 
         // before we deactivate, we will teleport the player, but only if there is a current contact
-        if (isCurrContact)
+        if (isCurrContact && !currContact.CompareTag("UIButton"))
         {
             // teleport to the location
             player.position = pointerIndicator.transform.position;
